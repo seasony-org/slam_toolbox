@@ -38,6 +38,8 @@ LocalizationSlamToolbox::LocalizationSlamToolbox(rclcpp::NodeOptions options)
     "slam_toolbox/clear_localization_buffer",
     std::bind(&LocalizationSlamToolbox::clearLocalizationBuffer, this,
     std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+  localization_response_ = this->create_publisher<std_msgs::msg::Float32>(
+    "localization_response", 1);
 
   // in localization mode, we cannot allow for interactive mode
   enable_interactive_mode_ = false;
@@ -178,7 +180,9 @@ LocalizedRangeScan * LocalizationSlamToolbox::addScan(
     update_reprocessing_transform = true;
     processor_type_ = PROCESS_LOCALIZATION;
   } else if (processor_type_ == PROCESS_LOCALIZATION) {
-    processed = smapper_->getMapper()->ProcessLocalization(range_scan);
+    std_msgs::msg::Float32 response;
+    processed = smapper_->getMapper()->ProcessLocalization(range_scan, response.data);
+    if (processed) {localization_response_->publish(response);}
     update_reprocessing_transform = false;
   } else {
     RCLCPP_FATAL(get_logger(), "LocalizationSlamToolbox: "

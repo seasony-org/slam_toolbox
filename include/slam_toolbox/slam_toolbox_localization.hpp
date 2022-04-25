@@ -22,6 +22,7 @@
 #include <memory>
 #include "slam_toolbox/slam_toolbox_common.hpp"
 #include "std_srvs/srv/empty.hpp"
+#include "std_msgs/msg/float32.hpp"
 
 namespace slam_toolbox
 {
@@ -60,6 +61,7 @@ protected:
   std::shared_ptr<rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>>
   localization_pose_sub_;
   std::shared_ptr<rclcpp::Service<std_srvs::srv::Empty> > clear_localization_;
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr localization_response_;
 };
 
 }  // namespace slam_toolbox

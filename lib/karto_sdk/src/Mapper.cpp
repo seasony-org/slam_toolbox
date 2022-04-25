@@ -2821,8 +2821,9 @@ kt_bool Mapper::ProcessAgainstNodesNearBy(LocalizedRangeScan * pScan, kt_bool ad
   return false;
 }
 
-kt_bool Mapper::ProcessLocalization(LocalizedRangeScan * pScan)
+kt_bool Mapper::ProcessLocalization(LocalizedRangeScan * pScan, float & response)
 {
+  response = 0.0;
   if (pScan == NULL) {
     return false;
   }
@@ -2865,7 +2866,7 @@ kt_bool Mapper::ProcessLocalization(LocalizedRangeScan * pScan)
   // correct scan (if not first scan)
   if (m_pUseScanMatching->GetValue() && pLastScan != NULL) {
     Pose2 bestPose;
-    m_pSequentialScanMatcher->MatchScan(pScan,
+    response = m_pSequentialScanMatcher->MatchScan(pScan,
       m_pMapperSensorManager->GetRunningScans(pScan->GetSensorName()),
       bestPose,
       covariance);
